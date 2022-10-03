@@ -20,4 +20,7 @@ public interface IUserDAO {
     List<User> selectUserNameIn();
 
     List<User> selectUserNameDe();
+    User getUserById(int id);
+
+    void insertUserStore(User user) throws SQLException;
 }
