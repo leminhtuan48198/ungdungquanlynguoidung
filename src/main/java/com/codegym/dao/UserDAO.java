@@ -153,6 +153,41 @@ public class UserDAO implements IUserDAO{
     }
 
     @Override
+    public void updateUserProcedure(User user) {
+        Connection connection=getConnection();
+        try {
+            CallableStatement callableStatement=connection.prepareCall("{call updateUser(?,?,?,?)}");
+            callableStatement.setString(1,user.getName());
+            callableStatement.setString(2,user.getEmail());
+            callableStatement.setString(3,user.getCountry());
+            callableStatement.setInt(4,user.getId());
+            callableStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<User> selectAllUsersProcedure() {
+        Connection connection=getConnection();
+        ResultSet rs=null;
+        List<User> userList=new ArrayList<>();
+        try {
+            CallableStatement callableStatement=connection.prepareCall("{call allusers}");
+            rs = callableStatement.executeQuery();
+            while(rs.next()){
+                String name =rs.getString("name");
+                String email=rs.getString("email");
+                String country=rs.getString("country");
+                userList.add(new User(name,email,country));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return userList;
+    }
+
+    @Override
 
     public void insertUpdateWithoutTransaction() {
 
@@ -271,6 +306,20 @@ public class UserDAO implements IUserDAO{
             e.printStackTrace();
         }
         return users;
+    }
+
+    @Override
+    public boolean deleteUserProcedure(int id) {
+        boolean rowDeleted;
+        Connection connection=getConnection();
+        try {
+            CallableStatement callableStatement=connection.prepareCall("{Call deleteUser(?)}");
+            callableStatement.setInt(1,id);
+            rowDeleted=callableStatement.executeUpdate()>0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return rowDeleted;
     }
 
     public boolean deleteUser(int id) throws SQLException {

@@ -13,6 +13,7 @@ public interface IUserDAO {
     public List<User> selectAllUsers();
 
     public boolean deleteUser(int id) throws SQLException;
+    public boolean deleteUserProcedure(int id);
 
     public boolean updateUser(User user) throws SQLException;
     public List<User> selectByCountry(String country) throws SQLException;
@@ -26,4 +27,6 @@ public interface IUserDAO {
     void addUserTransaction(User user, int[] permision);
     public void insertUpdateWithoutTransaction();
     public void insertUpdateUseTransaction();
+    public List<User> selectAllUsersProcedure();
+    public void updateUserProcedure(User user);
 }
