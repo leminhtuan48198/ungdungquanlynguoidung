@@ -117,6 +117,9 @@ public class UserServlet extends HttpServlet {
 
                     testUseTran(request, response);
                     break;
+                case "test-transaction":
+                    addUserTransaction(request,response);
+                    break;
 
                 default:
                     listUser(request, response);
@@ -125,6 +128,10 @@ public class UserServlet extends HttpServlet {
         } catch (SQLException ex) {
             throw new ServletException(ex);
         }
+    }
+
+    private void addUserTransaction(HttpServletRequest request, HttpServletResponse response) {
+        userDAO.addUserTransaction();
     }
 
     private void testUseTran(HttpServletRequest request, HttpServletResponse response) {

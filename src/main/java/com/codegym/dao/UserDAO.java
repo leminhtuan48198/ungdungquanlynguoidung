@@ -176,10 +176,11 @@ public class UserDAO implements IUserDAO{
             CallableStatement callableStatement=connection.prepareCall("{call allusers}");
             rs = callableStatement.executeQuery();
             while(rs.next()){
+                int id=rs.getInt(1);
                 String name =rs.getString("name");
                 String email=rs.getString("email");
                 String country=rs.getString("country");
-                userList.add(new User(name,email,country));
+                userList.add(new User(id,name,email,country));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -551,4 +552,37 @@ public class UserDAO implements IUserDAO{
     }
 
 
+    public void addUserTransaction() {
+        Connection connection=getConnection();
+        try {
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatement=connection.prepareStatement("insert into users(name,email,country) value(\"WuKhong\",\"sunkuko.com\",\"China\")");
+            PreparedStatement preparedStatement1=connection.prepareStatement("insert into users(id,name,email,country) values(null,\"Hugfhfgsgdfghkfdhgkjfdhgkfdhgkfdhjgfdgjhlkfdjglkfdjglkfdgjlkfdjglkfdgjlkfdgjlkfdjdfghkfdhgkjfdhgkfdhgkfdhjgfdgjhlkfdjglkfdjglkfdgjlkfdjglkfdgjlkfdgjlkfdjdfghkfdhgkjfdhgkfdhgkfdhjgfdgjhlkfdjglkfdjglkfdgjlkfdjglkfdgjlkfdgjlkfdjdfghkfdhgkjfdhgkfdhgkfdhjgfdgjhlkfdjglkfdjglkfdgjlkfdjglkfdgjlkfdgjlkfdjdfghkfdhgkjfdhgkfdhgkfdhjgfdgjhlkfdjglkfdjglkfdgjlkfdjglkfdgjlkfdgjlkfdjdfghkfdhgkjfdhgkfdhgkfdhjgfdgjhlkfdjglkfdjglkfdgjlkfdjglkfdgjlkfdgjlkfdjdfghkfdhgkjfdhgkfdhgkfdhjgfdgjhlkfdjglkfdjglkfdgjlkfdjglkfdgjlkfdgjlkfdjdfghkfdhgkjfdhgkfdhgkfdhjgfdgjhlkfdjglkfdjglkfdgjlkfdjglkfdgjlkfdgjlkfdjdfghkfdhgkjfdhgkfdhgkfdhjgfdgjhlkfdjglkfdjglkfdgjlkfdjglkfdgjlkfdgjlkfdjdfghkfdhgkjfdhgkfdhgkfdhjgfdgjhlkfdjglkfdjglkfdgjlkfdjglkfdgjlkfdgjlkfdjdfghkfdhgkjfdhgkfdhgkfdhjgfdgjhlkfdjglkfdjglkfdgjlkfdjglkfdgjlkfdgjlkfdjflkdjlkfdjkflgdjglky\",\"huynguyen@gmail.com\",\"VN\")");
+            preparedStatement.executeUpdate();
+            preparedStatement1.executeUpdate();
+            connection.commit();
+        } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+        catch (RuntimeException runtimeException) {
+            runtimeException.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }finally
+         {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
